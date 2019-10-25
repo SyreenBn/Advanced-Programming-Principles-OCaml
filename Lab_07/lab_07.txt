@@ -1,0 +1,42 @@
+type 'a etre =	Empty 
+		| Branch of 'a etree * 'a * 'a etree
+
+let et1 = Bramch(Branch(Empty, 3, Empty), 2, Empty)
+
+let rec is_elem e t = 
+ match t with
+	| Empty -> false
+	| Branch (t1, e', t2) when e = e' -> true
+	| Branch (t1, e', t2) when e < e' -> is_elem e t1 
+	| Branch (t1, e', t2) when e > e' -> is_elem e t2 
+
+let rec insert e t =
+ match t with
+        | Empty -> Branch (Empty, e, Empty)
+        | Branch (t1, e', t2) when e = e' -> t
+        | Branch (t1, e', t2) when e < e' -> Branch (insert e t1, e', t2)  
+        | Branch (t1, e', t2) when e > e' -> Branch  (t1, e',insert e t2)
+
+(* prove that: is_elem e ( insert e t) *)
+
+1- for all t of 'a tree, (P(Empty) and P(lt) ^ P(rt) -> P(t'))  
+
+2- base case is : is_elem e ( insert e Empty)
+	is_elem e (Branch (Empty, e, Empty))	- by def of insert -
+	= true                                  - by def of is_elem -
+
+3 - inductive hypothises is: is_elem e ( insert e lt) && is_elem e ( insert e rt)
+
+4 - inductive case is: is_elem e ( insert e t')
+	is_elem e ( insert e Branch (lt,x,rt))
+	
+	when x = e
+	is_elem e ( insert e Branch (lt,x,rt) ) is true    - by def of is_elem -
+	
+	when e < x
+	is_elem e ( insert e Branch (insert e lt,x,rt))  - by def of insert -
+	is_elem e ( insert e lt) is true                 - by inductive hypothises -
+	
+	when e > x
+        is_elem e ( insert e Branch (lt,x,insert e rt)) - by def of insert -
+        is_elem e ( insert e rt) is true                - by inductive hypothis -
